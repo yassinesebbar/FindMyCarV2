@@ -15,19 +15,21 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMapClickListener {
 
     private GoogleMap mMap;
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
-
+    
     private static final int REQUEST_CODE = 101;
 
 
@@ -82,11 +84,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        createMap();
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(sydney).title("I am here"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+//        LatLng sydney = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+//        mMap.addMarker(new MarkerOptions().position(sydney).title("I am here"));
+//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    private void createMap() {
+        mMap.setMyLocationEnabled(true);
+        mMap.setOnMyLocationButtonClickListener(this);
+        mMap.setOnMyLocationClickListener(this);
+        mMap.setOnMapClickListener(this);
+        UiSettings mapsUisettings = mMap.getUiSettings();
+        mapsUisettings.setMapToolbarEnabled(true);
+        mapsUisettings.setZoomControlsEnabled(true);
+        mapsUisettings.setCompassEnabled(true);
+
     }
 
     @Override
@@ -101,5 +116,28 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 break;
         }
 
+    }
+
+    @Override
+    public boolean onMyLocationButtonClick() {
+        Toast.makeText(this, "Hier ben je", Toast.LENGTH_SHORT).show();
+        // Return false so that we don't consume the event and the default behavior still occurs
+        // (the camera animates to the user's current position).
+        return false;
+    }
+
+    @Override
+    public void onMyLocationClick(@NonNull Location location) {
+        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void onMapClick(LatLng latLng) {
+        Marker marker = mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title("Hier heb je geklikt lul")
+        );
+        marker.setTag(0);
     }
 }
