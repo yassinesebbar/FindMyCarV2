@@ -3,6 +3,7 @@ package com.example.findmycarv2;
 import android.Manifest;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,10 +28,12 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
-    Location currentLocation;
-    FusedLocationProviderClient fusedLocationProviderClient;
-    
+    private Location currentLocation;
+    private FusedLocationProviderClient fusedLocationProviderClient;
+    private DatabaseHandler databaseHandler;
     private static final int REQUEST_CODE = 101;
+
+    private CarLocation[] carLocations;
 
 
 
@@ -45,6 +48,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
+        databaseHandler = new DatabaseHandler(this);
+//        databaseHandler.insertDummyData();
+        carLocations = databaseHandler.retrieveData();
+
+            for(int i = 0;i < carLocations.length; i++ ){
+
+                Log.i("Straat", carLocations[i].getStreet());
+
+            }
+
 
     }
 
@@ -147,16 +160,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     private void openGoToDialog(){
-
         GoToDialog goToDialog = new GoToDialog();
         goToDialog.show(getSupportFragmentManager(), "goTo dialog");
-
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
         openGoToDialog();
-
         return true;
     }
 }
