@@ -79,8 +79,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
                 carLocations[cursor.getPosition()].setDateTime(cursor.getString(5));
                 carLocations[cursor.getPosition()].setImagePath(cursor.getString(6));
-                carLocations[cursor.getPosition()].setLat(cursor.getString(0));
-                carLocations[cursor.getPosition()].setLon(cursor.getString(1));
+                carLocations[cursor.getPosition()].setLat(cursor.getString(1));
+                carLocations[cursor.getPosition()].setLon(cursor.getString(2));
                 carLocations[cursor.getPosition()].setStreet(cursor.getString(3));
                 carLocations[cursor.getPosition()].setZipcode(cursor.getString(4));
 
@@ -92,18 +92,24 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     }
 
+    public void clearDatabase() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String clearDBQuery = "DELETE FROM "+TABLE_NAME;
+        db.execSQL(clearDBQuery);
+    }
     public void insertDummyData(){
 
-        insertData("500", "400", "1234AJ", "Kruisherenborch 12","Fri Jan 10 19:49:29 GMT+00:00 2020", "a");
-        insertData("125", "4600", "1234AB", "Terpenborch 12","Fri Jan 10 19:49:29 GMT+00:00 2020", "a");
-        insertData("130", "350", "1234AC", "Terpenborch 1","Fri Jan 10 19:49:29 GMT+00:00 2020", "b");
-        insertData("400", "275", "1234AD", "Afrikaandersstraat 12","Fri Jan 10 19:49:29 GMT+00:00 2020", "c");
-        insertData("600", "45600", "1234AE", "Afrikaandersstraat 34","Fri Jan 10 19:49:29 GMT+00:00 2020", "d");
-        insertData("345", "800", "1234AF", "Terpenborch 23","Fri Jan 10 19:49:29 GMT+00:00 2020", "e");
-        insertData("600", "350", "1234AG", "Kruisherenborch 16","Fri Jan 10 19:49:29 GMT+00:00 2020", "f");
-        insertData("300", "375", "1234AH", "Terpenborch 8","Fri Jan 10 19:49:29 GMT+00:00 2020", "g");
-        insertData("1234", "870", "1234AI", "Dommelborg 6","Fri Jan 10 19:49:29 GMT+00:00 2020", "h");
-        insertData("5000", "560", "1234AK", "Dommelborg 9","Fri Jan 10 19:49:29 GMT+00:00 2020", "i");
+        insertData("51.722536", "5.358161", "1234AJ", "Portela","Fri Jan 10 19:49:29 GMT+00:00 2020", "a");
+//        insertData("125", "4600", "1234AB", "Terpenborch 12","Fri Jan 10 19:49:29 GMT+00:00 2020", "a");
+//        insertData("130", "350", "1234AC", "Terpenborch 1","Fri Jan 10 19:49:29 GMT+00:00 2020", "b");
+//        insertData("400", "275", "1234AD", "Afrikaandersstraat 12","Fri Jan 10 19:49:29 GMT+00:00 2020", "c");
+//        insertData("600", "45600", "1234AE", "Afrikaandersstraat 34","Fri Jan 10 19:49:29 GMT+00:00 2020", "d");
+//        insertData("345", "800", "1234AF", "Terpenborch 23","Fri Jan 10 19:49:29 GMT+00:00 2020", "e");
+//        insertData("600", "350", "1234AG", "Kruisherenborch 16","Fri Jan 10 19:49:29 GMT+00:00 2020", "f");
+//        insertData("300", "375", "1234AH", "Terpenborch 8","Fri Jan 10 19:49:29 GMT+00:00 2020", "g");
+//        insertData("1234", "870", "1234AI", "Dommelborg 6","Fri Jan 10 19:49:29 GMT+00:00 2020", "h");
+//        insertData("5000", "560", "1234AK", "Dommelborg 9","Fri Jan 10 19:49:29 GMT+00:00 2020", "i");
 
         }
 

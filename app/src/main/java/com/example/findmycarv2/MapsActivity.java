@@ -17,6 +17,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -36,7 +37,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private CarLocation[] carLocations;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,12 +49,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
         databaseHandler = new DatabaseHandler(this);
-//        databaseHandler.insertDummyData();
+//        databaseHandler.clearDatabase();
+        databaseHandler.insertDummyData();
         carLocations = databaseHandler.retrieveData();
 
             for(int i = 0;i < carLocations.length; i++ ){
 
-                Log.i("Straat", carLocations[i].getStreet());
+                Log.i("Straat", carLocations[i].getStreet() + " " + carLocations[i].getLat() + " " + carLocations[i].getLon());
 
             }
 
@@ -102,10 +103,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         createMap();
         mMap.setOnMarkerClickListener(this);
 
-        // Add a marker in Sydney and move the camera
-//        LatLng sydney = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-//        mMap.addMarker(new MarkerOptions().position(sydney).title("I am here"));
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        HistoryLocationsMarkers();
+
     }
 
     private void createMap() {
@@ -117,6 +116,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapsUisettings.setMapToolbarEnabled(true);
         mapsUisettings.setZoomControlsEnabled(true);
         mapsUisettings.setCompassEnabled(true);
+
+    }
+
+    private void HistoryLocationsMarkers(){
+        //         Add a marker in Sydney and move the camera
+
+
+        for(int i = 0; i < carLocations.length; i++){
+            LatLng HistoryLocation = new LatLng(Double.parseDouble(carLocations[i].getLat()), Double.parseDouble(carLocations[i].getLon()));
+
+            if(i != (carLocations.length - 1)){
+                mMap.addMarker(new MarkerOptions().position(HistoryLocation).title(carLocations[i].getStreet()));
+            }else{
+                mMap.addMarker(new MarkerOptions().position(HistoryLocation).title(carLocations[i].getStreet()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            }
+
+
+
+        }
 
     }
 
