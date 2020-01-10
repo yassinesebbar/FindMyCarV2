@@ -24,7 +24,7 @@ import com.google.android.gms.tasks.Task;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMapClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap;
     Location currentLocation;
@@ -41,6 +41,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
+
+
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
 
@@ -85,6 +87,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         createMap();
+        mMap.setOnMarkerClickListener(this);
 
         // Add a marker in Sydney and move the camera
 //        LatLng sydney = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
@@ -139,5 +142,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .title("Hier heb je geklikt lul")
         );
         marker.setTag(0);
+    }
+
+
+
+    private void openGoToDialog(){
+
+        GoToDialog goToDialog = new GoToDialog();
+        goToDialog.show(getSupportFragmentManager(), "goTo dialog");
+
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        openGoToDialog();
+
+        return true;
     }
 }
