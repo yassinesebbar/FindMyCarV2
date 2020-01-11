@@ -20,7 +20,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     public static final String COL_LAT = "lat TEXT";
     public static final String COL_LONG = "long TEXT";
     public static final String COL_STREET = "street TEXT";
-    public static final String COL_ZIPCODE = "zipcode TEXT";
     public static final String COL_DATETIME = "datetime TEXT";
     public static final String COL_PHOTOS_PATH = "photos_path TEXT";
 
@@ -32,7 +31,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTable = "CREATE TABLE " + TABLE_NAME + "("+ COL_ID +","+ COL_LAT+","+ COL_LONG+","+ COL_STREET+","+ COL_ZIPCODE+","+ COL_DATETIME +","+ COL_PHOTOS_PATH +")";
+        String createTable = "CREATE TABLE " + TABLE_NAME + "("+ COL_ID +","+ COL_LAT+","+ COL_LONG+","+ COL_STREET+","+ COL_DATETIME +","+ COL_PHOTOS_PATH +")";
 
         db.execSQL(createTable);
     }
@@ -45,7 +44,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
     }
 
-    public boolean insertData(String lat, String lon, String zipcode, String street, String dateTime, String imagesPath){
+    public boolean insertData(String lat, String lon, String street, String dateTime, String imagesPath){
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -54,7 +53,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
         contentValues.put("lat", lat);
         contentValues.put("long", lon);
         contentValues.put("street", street);
-        contentValues.put("zipcode", zipcode);
         contentValues.put("photos_path", imagesPath);
 
         if(db.insert(TABLE_NAME, null, contentValues ) < 1){
@@ -82,7 +80,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
                 carLocations[cursor.getPosition()].setLat(cursor.getString(1));
                 carLocations[cursor.getPosition()].setLon(cursor.getString(2));
                 carLocations[cursor.getPosition()].setStreet(cursor.getString(3));
-                carLocations[cursor.getPosition()].setZipcode(cursor.getString(4));
 
 
             } while (cursor.moveToNext());
@@ -100,7 +97,7 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     }
     public void insertDummyData(){
 
-        insertData("51.722536", "5.358161", "1234AJ", "Portela","Fri Jan 10 19:49:29 GMT+00:00 2020", "a");
+        insertData("51.722536", "5.358161", "Kruisherenborch 24", "Fri Jan 10 19:49:29 GMT+00:00 2020", "a");
 //        insertData("125", "4600", "1234AB", "Terpenborch 12","Fri Jan 10 19:49:29 GMT+00:00 2020", "a");
 //        insertData("130", "350", "1234AC", "Terpenborch 1","Fri Jan 10 19:49:29 GMT+00:00 2020", "b");
 //        insertData("400", "275", "1234AD", "Afrikaandersstraat 12","Fri Jan 10 19:49:29 GMT+00:00 2020", "c");

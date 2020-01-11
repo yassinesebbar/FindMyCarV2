@@ -1,6 +1,8 @@
 package com.example.findmycarv2;
 
 import android.Manifest;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,17 +26,26 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, SaveLocationDialog.SaveLocationDialogListener {
 
     private GoogleMap mMap;
     private Location currentLocation;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private DatabaseHandler databaseHandler;
     private static final int REQUEST_CODE = 101;
-
+    private Geocoder geocoder;
     private CarLocation[] carLocations;
+    private List<Address> addres;
+    private Location currentCarLocation;
+
 
 
     @Override
@@ -49,16 +60,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
         databaseHandler = new DatabaseHandler(this);
-//  databaseHandler.clearDatabase();
+        databaseHandler.clearDatabase();
     //   databaseHandler.insertDummyData();
-        carLocations = databaseHandler.retrieveData();
 
-            for(int i = 0;i < carLocations.length; i++ ){
-
-                Log.i("Straat", carLocations[i].getStreet() + " " + carLocations[i].getLat() + " " + carLocations[i].getLon());
-
-            }
-
+        geocoder = new Geocoder(this, Locale.getDefault());
 
     }
 
@@ -104,7 +109,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMarkerClickListener(this);
 
         HistoryLocationsMarkers();
-
     }
 
     private void createMap() {
@@ -121,6 +125,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void HistoryLocationsMarkers(){
         //         Add a marker in Sydney and move the camera
+        carLocations = databaseHandler.retrieveData();
 
 
         for(int i = 0; i < carLocations.length; i++){
@@ -131,11 +136,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }else{
                 mMap.addMarker(new MarkerOptions().position(HistoryLocation).title(carLocations[i].getStreet()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))).setTag(carLocations[i]);
             }
-
-
-
         }
-
     }
 
     @Override
@@ -149,7 +150,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 break;
         }
-
     }
 
     @Override
@@ -162,7 +162,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
+        try {
+
+            currentCarLocation = location;
+            addres = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            openSaveLocationDialog();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
 
     }
 
@@ -175,14 +185,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        marker.setTag(0);
     }
 
+    private void openSaveLocationDialog(){
 
+        SaveLocationDialog saveLocationDialog = new SaveLocationDialog();
+
+        Bundle data = new Bundle();//create bundle instance
+        data.putString("street", addres.get(0).getAddressLine(0));
+
+        saveLocationDialog.setArguments(data);
+        saveLocationDialog.show(getSupportFragmentManager(), "saveLocation dialog");
+
+    }
 
     private void openGoToDialog(CarLocation carLocation){
         GoToDialog goToDialog = new GoToDialog();
 
         Bundle data = new Bundle();//create bundle instance
         data.putString("street", carLocation.getStreet());
-        data.putString("zipcode", carLocation.getZipcode());
         data.putString("dateTime", carLocation.getDateTime());
 
         goToDialog.setArguments(data);
@@ -196,4 +215,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         openGoToDialog(carLocationMarker);
         return true;
     }
+
+
+    @Override
+    public void saveLocation() {
+        String addressLine = addres.get(0).getAddressLine(0);
+        String latitude = Double.toString(currentCarLocation.getLatitude());
+        String longitude = Double.toString(currentCarLocation.getLongitude());
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-YY HH:mm", Locale.getDefault());
+        String currentDateandTime = sdf.format(new Date());
+        databaseHandler.insertData(latitude, longitude, addressLine,currentDateandTime,"");
+        mMap.clear();
+
+        HistoryLocationsMarkers();
+    }
 }
+

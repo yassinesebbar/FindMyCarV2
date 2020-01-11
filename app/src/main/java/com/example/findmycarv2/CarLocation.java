@@ -7,7 +7,6 @@ public class CarLocation {
     private String lat;
     private String lon;
     private String street;
-    private String zipcode;
     private String imagePath;
     private String dateTime;
 
@@ -33,14 +32,6 @@ public class CarLocation {
 
     public void setStreet(String street) {
         this.street = street;
-    }
-
-    public String getZipcode() {
-        return zipcode;
-    }
-
-    public void setZipcode(String zipcode) {
-        this.zipcode = zipcode;
     }
 
     public String getImagePath() {
