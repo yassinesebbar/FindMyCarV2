@@ -17,12 +17,21 @@ public class GoToDialog extends AppCompatDialogFragment {
     private TextView street;
     private TextView storedDateLocation;
     private TextView zipCodeCity;
+    private View view;
 
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.goto_dialog, null);
+        view = inflater.inflate(R.layout.goto_dialog, null);
+
+        street = view.findViewById(R.id.textview_street);
+        storedDateLocation = view.findViewById(R.id.textview_storedDateTime);
+        zipCodeCity = view.findViewById(R.id.textview_zipcodeCity);
+
+        street.setText(getArguments().getString("street"));
+        storedDateLocation.setText(getArguments().getString("dateTime"));
+        zipCodeCity.setText(getArguments().getString("zipcode"));
 
         builder.setView(view);
         builder.setTitle("Go to your car");

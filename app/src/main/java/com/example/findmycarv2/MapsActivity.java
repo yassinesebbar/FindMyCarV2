@@ -49,8 +49,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
         databaseHandler = new DatabaseHandler(this);
-//        databaseHandler.clearDatabase();
-        databaseHandler.insertDummyData();
+//  databaseHandler.clearDatabase();
+    //   databaseHandler.insertDummyData();
         carLocations = databaseHandler.retrieveData();
 
             for(int i = 0;i < carLocations.length; i++ ){
@@ -127,9 +127,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LatLng HistoryLocation = new LatLng(Double.parseDouble(carLocations[i].getLat()), Double.parseDouble(carLocations[i].getLon()));
 
             if(i != (carLocations.length - 1)){
-                mMap.addMarker(new MarkerOptions().position(HistoryLocation).title(carLocations[i].getStreet()));
+                mMap.addMarker(new MarkerOptions().position(HistoryLocation).title(carLocations[i].getStreet())).setTag(carLocations[i]);
             }else{
-                mMap.addMarker(new MarkerOptions().position(HistoryLocation).title(carLocations[i].getStreet()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                mMap.addMarker(new MarkerOptions().position(HistoryLocation).title(carLocations[i].getStreet()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))).setTag(carLocations[i]);
             }
 
 
@@ -168,23 +168,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapClick(LatLng latLng) {
-        Marker marker = mMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .title("Hier heb je geklikt lul")
-        );
-        marker.setTag(0);
+//        Marker marker = mMap.addMarker(new MarkerOptions()
+//                .position(latLng)
+//                .title("Hier heb je geklikt lul")
+//        );
+//        marker.setTag(0);
     }
 
 
 
-    private void openGoToDialog(){
+    private void openGoToDialog(CarLocation carLocation){
         GoToDialog goToDialog = new GoToDialog();
+
+        Bundle data = new Bundle();//create bundle instance
+        data.putString("street", carLocation.getStreet());
+        data.putString("zipcode", carLocation.getZipcode());
+        data.putString("dateTime", carLocation.getDateTime());
+
+        goToDialog.setArguments(data);
         goToDialog.show(getSupportFragmentManager(), "goTo dialog");
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        openGoToDialog();
+        CarLocation carLocationMarker = (CarLocation) marker.getTag();
+
+        openGoToDialog(carLocationMarker);
         return true;
     }
 }
