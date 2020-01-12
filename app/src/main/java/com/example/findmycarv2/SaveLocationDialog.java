@@ -8,16 +8,20 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import java.sql.Blob;
 
 public class SaveLocationDialog extends AppCompatDialogFragment {
 
     private TextView street;
     private View view;
     private SaveLocationDialogListener listener;
+    private Blob image;
 
     @NonNull
     @Override
@@ -45,8 +49,37 @@ public class SaveLocationDialog extends AppCompatDialogFragment {
             }
         });
 
-        return builder.create();
+        builder.setNeutralButton("Take Photo", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+//                listener.saveLocation();
+                dialog.dismiss();
 
+            }
+        });
+
+
+       Dialog dialog = builder.create();
+
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+            @Override
+            public void onShow(DialogInterface dialog) {
+
+                Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_NEUTRAL);
+                button.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+
+
+                    }
+                });
+            }
+        });
+
+        return dialog;
     }
 
     @Override
@@ -63,4 +96,8 @@ public class SaveLocationDialog extends AppCompatDialogFragment {
     public interface SaveLocationDialogListener{
         void saveLocation();
     }
+
+
+
+
 }
