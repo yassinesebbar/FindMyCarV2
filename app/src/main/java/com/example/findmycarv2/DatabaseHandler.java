@@ -75,8 +75,8 @@ public class DatabaseHandler extends SQLiteOpenHelper{
             do {
                 carLocations[cursor.getPosition()] = new CarLocation();
 
-                carLocations[cursor.getPosition()].setDateTime(cursor.getString(5));
-                carLocations[cursor.getPosition()].setImagePath(cursor.getString(6));
+                carLocations[cursor.getPosition()].setDateTime(cursor.getString(4));
+                carLocations[cursor.getPosition()].setImagePath(cursor.getString(5));
                 carLocations[cursor.getPosition()].setLat(cursor.getString(1));
                 carLocations[cursor.getPosition()].setLon(cursor.getString(2));
                 carLocations[cursor.getPosition()].setStreet(cursor.getString(3));

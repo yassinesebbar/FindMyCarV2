@@ -110,7 +110,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         createMap();
         mMap.setOnMarkerClickListener(this);
 
-        HistoryLocationsMarkers();
+//        HistoryLocationsMarkers();
     }
 
     private void createMap() {
