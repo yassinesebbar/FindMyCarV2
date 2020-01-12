@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.findmycarv2.directionhelpers.FetchURL;
+import com.example.findmycarv2.directionhelpers.TaskLoadedCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,6 +25,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
@@ -34,7 +38,7 @@ import java.util.Locale;
 
 import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, SaveLocationDialog.SaveLocationDialogListener {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnMyLocationClickListener, GoogleMap.OnMapClickListener, GoogleMap.OnMarkerClickListener, SaveLocationDialog.SaveLocationDialogListener, TaskLoadedCallback, GoToDialog.GoToDialogListener {
 
     private GoogleMap mMap;
     private Location currentLocation;
@@ -45,6 +49,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private CarLocation[] carLocations;
     private List<Address> addres;
     private Location currentCarLocation;
+    private Polyline currentPolyline;
+    private LatLng goToLocation;
+
 
 
 
@@ -170,7 +177,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             currentCarLocation = location;
             addres = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-            openSaveLocationDialog();
+
+            if(!addres.isEmpty()){
+                openSaveLocationDialog();
+            }
 
 
         } catch (IOException e) {
@@ -217,6 +227,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public boolean onMarkerClick(Marker marker) {
         CarLocation carLocationMarker = (CarLocation) marker.getTag();
 
+        goToLocation = marker.getPosition();
+
         openGoToDialog(carLocationMarker);
         return true;
     }
@@ -228,12 +240,43 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String latitude = Double.toString(currentCarLocation.getLatitude());
         String longitude = Double.toString(currentCarLocation.getLongitude());
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-YY HH:mm", Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yy HH:mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
         databaseHandler.insertData(latitude, longitude, addressLine,currentDateandTime,pathTofile);
         mMap.clear();
 
         HistoryLocationsMarkers();
+    }
+
+    private String getUrl(Location origin, LatLng dest, String directionMode) {
+        // Origin of route
+        String str_origin = "origin=" + origin.getLatitude() + "," + origin.getLongitude();
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+        // Mode
+        String mode = "mode=" + directionMode;
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + mode;
+        // Output format
+        String output = "json";
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters + "&key=" + getString(R.string.google_maps_key);
+        return url;
+    }
+
+    @Override
+    public void onTaskDone(Object... values) {
+        if (currentPolyline != null)
+            currentPolyline.remove();
+            currentPolyline = mMap.addPolyline((PolylineOptions) values[0]);
+    }
+
+    @Override
+    public void GoToLocation() {
+
+        if(currentLocation != null && goToLocation != null){
+            new FetchURL(this).execute(getUrl(currentLocation, goToLocation, "driving"), "driving");
+        }
     }
 }
 

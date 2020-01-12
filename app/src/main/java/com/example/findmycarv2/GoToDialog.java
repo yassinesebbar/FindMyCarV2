@@ -3,6 +3,7 @@ package com.example.findmycarv2;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -24,6 +25,8 @@ public class GoToDialog extends AppCompatDialogFragment {
     private TextView storedDateLocation;
     private View view;
     private ImageView imageView;
+    private GoToDialogListener listener;
+
 
 
     @Override
@@ -63,10 +66,27 @@ public class GoToDialog extends AppCompatDialogFragment {
         builder.setPositiveButton("Go", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                listener.GoToLocation();
             }
         });
 
         return builder.create();
     }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            listener = (GoToDialogListener) context;
+        } catch (ClassCastException e){
+            throw new ClassCastException(context.toString() + "must implement GoToDialogListener");
+        }
+    }
+
+
+    public interface GoToDialogListener {
+        void GoToLocation();
+    }
+
 }
