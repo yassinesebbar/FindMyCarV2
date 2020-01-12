@@ -5,18 +5,26 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.Dot;
+import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
     TaskLoadedCallback taskCallback;
-    String directionMode = "driving";
+    String directionMode = "walking";
+    private static final int PATTERN_GAP_LENGTH_PX = 10;  // 1
+    private static final Gap GAP = new Gap(PATTERN_GAP_LENGTH_PX);
+    private static final Dot DOT = new Dot();
+    private static final List<PatternItem> PATTERN_DOTTED = Arrays.asList(DOT, GAP);
 
     public PointsParser(Context mContext, String directionMode) {
         this.taskCallback = (TaskLoadedCallback) mContext;
@@ -71,7 +79,8 @@ public class PointsParser extends AsyncTask<String, Integer, List<List<HashMap<S
             lineOptions.addAll(points);
             if (directionMode.equalsIgnoreCase("walking")) {
                 lineOptions.width(10);
-                lineOptions.color(Color.MAGENTA);
+                lineOptions.color(Color.BLUE);
+                lineOptions.pattern(PATTERN_DOTTED);
             } else {
                 lineOptions.width(20);
                 lineOptions.color(Color.BLUE);

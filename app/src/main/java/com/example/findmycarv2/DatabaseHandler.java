@@ -73,14 +73,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         if (cursor.moveToFirst()) {
             do {
-                carLocations[cursor.getPosition()] = new CarLocation();
-
-                carLocations[cursor.getPosition()].setDateTime(cursor.getString(4));
-                carLocations[cursor.getPosition()].setImagePath(cursor.getString(5));
-                carLocations[cursor.getPosition()].setLat(cursor.getString(1));
-                carLocations[cursor.getPosition()].setLon(cursor.getString(2));
-                carLocations[cursor.getPosition()].setStreet(cursor.getString(3));
-
+                carLocations[cursor.getPosition()] = new CarLocation.Builder()
+                        .setAddress(cursor.getString(3))
+                        .setImagePath(cursor.getString(5))
+                        .setLocationInfo(cursor.getString(1),cursor.getString(2))
+                        .setTimeLocation(cursor.getString(4))
+                        .build();
 
             } while (cursor.moveToNext());
         }
@@ -109,8 +107,6 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 //        insertData("5000", "560", "1234AK", "Dommelborg 9","Fri Jan 10 19:49:29 GMT+00:00 2020", "i");
 
         }
-
-
 
 }
 

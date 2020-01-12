@@ -10,44 +10,71 @@ public class CarLocation {
     private String imagePath;
     private String dateTime;
 
-    public String getLat() {
-        return lat;
+    private CarLocation(){}
+
+    public static class Builder{
+
+        private String lat;
+        private String lon;
+        private String street;
+        private String imagePath;
+        private String dateTime;
+
+        public Builder setLocationInfo(String lat, String lon){
+
+            this.lat = lat;
+            this.lon = lon;
+
+            return this;
+        }
+
+        public Builder setAddress(String address){
+            this.street = address;
+            return this;
+        }
+
+        public Builder setImagePath(String imagepath){
+            this.imagePath = imagepath;
+            return this;
+        }
+
+        public Builder setTimeLocation(String dateTime){
+            this.dateTime = dateTime;
+            return this;
+        }
+
+        public CarLocation build(){
+            CarLocation carLocation = new CarLocation();
+
+            carLocation.lat = lat;
+            carLocation.lon = lon;
+            carLocation.street = street;
+            carLocation.imagePath = imagePath;
+            carLocation.dateTime = dateTime;
+
+            return carLocation;
+        }
+
     }
 
-    public void setLat(String lat) {
-        this.lat = lat;
+    public String getLat() {
+        return lat;
     }
 
     public String getLon() {
         return lon;
     }
 
-    public void setLon(String lon) {
-        this.lon = lon;
-    }
-
     public String getStreet() {
         return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
     }
 
     public String getImagePath() {
         return imagePath;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
-    }
-
     public String getDateTime() {
         return dateTime;
     }
-
-    public void setDateTime(String dateTime) {
-        this.dateTime = dateTime;
-    }
-
 }
+

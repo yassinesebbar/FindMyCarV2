@@ -16,6 +16,7 @@ import com.example.findmycarv2.directionhelpers.FetchURL;
 import com.example.findmycarv2.directionhelpers.TaskLoadedCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -59,7 +60,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
 
@@ -69,8 +69,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         databaseHandler = new DatabaseHandler(this);
       //  databaseHandler.clearDatabase();
     //   databaseHandler.insertDummyData();
-
-
 
         geocoder = new Geocoder(this, Locale.getDefault());
 
@@ -125,10 +123,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         mMap.setOnMapClickListener(this);
+        mMap.setMinZoomPreference(8);
         UiSettings mapsUisettings = mMap.getUiSettings();
         mapsUisettings.setMapToolbarEnabled(true);
         mapsUisettings.setZoomControlsEnabled(true);
         mapsUisettings.setCompassEnabled(true);
+
+
+
+//        mMap.moveCamera();
 
     }
 
@@ -274,8 +277,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void GoToLocation() {
 
+        Task<Location> task = fusedLocationProviderClient.getLastLocation();
+
+        task.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+
+                if(location != null){
+                    currentLocation = location;
+                }
+
+            }
+        });
+
         if(currentLocation != null && goToLocation != null){
-            new FetchURL(this).execute(getUrl(currentLocation, goToLocation, "driving"), "driving");
+            new FetchURL(this).execute(getUrl(currentLocation, goToLocation, "walking"), "walking");
         }
     }
 }
