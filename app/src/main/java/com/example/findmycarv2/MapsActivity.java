@@ -60,8 +60,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
         databaseHandler = new DatabaseHandler(this);
-        databaseHandler.clearDatabase();
+      //  databaseHandler.clearDatabase();
     //   databaseHandler.insertDummyData();
+
+
 
         geocoder = new Geocoder(this, Locale.getDefault());
 
@@ -136,6 +138,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }else{
                 mMap.addMarker(new MarkerOptions().position(HistoryLocation).title(carLocations[i].getStreet()).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))).setTag(carLocations[i]);
             }
+
+            Log.i("photo", carLocations[i].getImagePath());
         }
     }
 
@@ -203,6 +207,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Bundle data = new Bundle();//create bundle instance
         data.putString("street", carLocation.getStreet());
         data.putString("dateTime", carLocation.getDateTime());
+        data.putString("imageUrl", carLocation.getImagePath());
 
         goToDialog.setArguments(data);
         goToDialog.show(getSupportFragmentManager(), "goTo dialog");
@@ -218,14 +223,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     @Override
-    public void saveLocation() {
+    public void saveLocation(String pathTofile) {
         String addressLine = addres.get(0).getAddressLine(0);
         String latitude = Double.toString(currentCarLocation.getLatitude());
         String longitude = Double.toString(currentCarLocation.getLongitude());
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-YY HH:mm", Locale.getDefault());
         String currentDateandTime = sdf.format(new Date());
-        databaseHandler.insertData(latitude, longitude, addressLine,currentDateandTime,"");
+        databaseHandler.insertData(latitude, longitude, addressLine,currentDateandTime,pathTofile);
         mMap.clear();
 
         HistoryLocationsMarkers();

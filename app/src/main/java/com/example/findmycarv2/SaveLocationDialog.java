@@ -41,7 +41,7 @@ public class SaveLocationDialog extends AppCompatDialogFragment {
     private View view;
     private SaveLocationDialogListener listener;
     private ImageView imageView;
-    private String pathTofile;
+    private String pathTofile = "";
 
 
     @NonNull
@@ -67,7 +67,7 @@ public class SaveLocationDialog extends AppCompatDialogFragment {
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                listener.saveLocation();
+                listener.saveLocation(pathTofile);
             }
         });
 
@@ -114,12 +114,12 @@ public class SaveLocationDialog extends AppCompatDialogFragment {
     }
 
     public interface SaveLocationDialogListener{
-        void saveLocation();
+        void saveLocation(String pathTofile);
     }
 
     public void takeImageSettings(){
         if(Build.VERSION.SDK_INT >= 23){
-            requestPermissions(new String[] {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+            requestPermissions(new String[] {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE}, 2);
         }
 
         imageView = view.findViewById(R.id.imageView);
