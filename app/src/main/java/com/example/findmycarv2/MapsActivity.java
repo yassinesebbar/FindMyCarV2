@@ -66,7 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
-        databaseHandler = new DatabaseHandler(this);
+        databaseHandler = DatabaseHandler.getInstance(this);
       //  databaseHandler.clearDatabase();
     //   databaseHandler.insertDummyData();
 
@@ -123,12 +123,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         mMap.setOnMapClickListener(this);
-        mMap.setMinZoomPreference(8);
         UiSettings mapsUisettings = mMap.getUiSettings();
         mapsUisettings.setMapToolbarEnabled(true);
         mapsUisettings.setZoomControlsEnabled(true);
         mapsUisettings.setCompassEnabled(true);
 
+        if(currentLocation != null){
+            LatLng clocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(clocation, 10));
+        }
 
 
 //        mMap.moveCamera();

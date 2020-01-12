@@ -22,10 +22,11 @@ public class DatabaseHandler extends SQLiteOpenHelper{
     public static final String COL_STREET = "street TEXT";
     public static final String COL_DATETIME = "datetime TEXT";
     public static final String COL_PHOTOS_PATH = "photos_path TEXT";
+    private static DatabaseHandler instance;
 
 
 
-    public DatabaseHandler(@Nullable Context context) {
+    private DatabaseHandler(@Nullable Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
 
@@ -108,5 +109,12 @@ public class DatabaseHandler extends SQLiteOpenHelper{
 
         }
 
-}
+        public static DatabaseHandler getInstance(@Nullable Context context){
+            if (instance == null){
+                instance = new DatabaseHandler(context);
+            }
 
+            return instance;
+        }
+
+}
