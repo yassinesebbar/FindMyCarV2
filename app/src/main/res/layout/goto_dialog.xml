@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:padding="20dp">
 
 
@@ -33,6 +35,16 @@
         android:text="your street and number"
         android:textSize="20sp" />
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="372dp"
+        android:layout_height="322dp"
+        android:layout_below="@id/textview_street"
+        android:layout_marginTop="53dp"
+        android:gravity="center_horizontal"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="107dp"
+        tools:layout_editor_absoluteY="71dp" />
 
 
 </RelativeLayout>
