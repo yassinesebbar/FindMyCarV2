@@ -171,7 +171,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMyLocationButtonClick() {
-        Toast.makeText(this, "Hier ben je", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Flying to current location", Toast.LENGTH_SHORT).show();
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
@@ -192,8 +192,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     @Override
@@ -280,22 +278,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void GoToLocation() {
 
-        Task<Location> task = fusedLocationProviderClient.getLastLocation();
-
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-
-                if(location != null){
-                    currentLocation = location;
-                }
-
-            }
-        });
-
-        if(currentLocation != null && goToLocation != null){
-            new FetchURL(this).execute(getUrl(currentLocation, goToLocation, "walking"), "walking");
+        if(        mMap.getMyLocation()!= null && goToLocation != null){
+            new FetchURL(this).execute(getUrl( mMap.getMyLocation(), goToLocation, "walking"), "walking");
         }
+
+
     }
 }
 
