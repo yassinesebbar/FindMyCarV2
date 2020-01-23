@@ -64,6 +64,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
 
 
+
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         fetchLastLocation();
         databaseHandler = DatabaseHandler.getInstance(this);
@@ -278,9 +279,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void GoToLocation() {
 
-        if(        mMap.getMyLocation()!= null && goToLocation != null){
-            new FetchURL(this).execute(getUrl( mMap.getMyLocation(), goToLocation, "walking"), "walking");
-        }
+//        if(        mMap.getMyLocation()!= null && goToLocation != null){
+//            new FetchURL(this).execute(getUrl( mMap.getMyLocation(), goToLocation, "walking"), "walking");
+//        }
 
 
     }
